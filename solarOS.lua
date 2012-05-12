@@ -7,7 +7,7 @@ os.pullEvent = os.pullEventRaw
 
 -- variables for the prompt
 program = "solarOS"
-version = "0.1"
+version = "0.2"
 host = "derp"
 user = ""
 
@@ -76,9 +76,29 @@ function exec()
         logout()
     elseif command:match("clear") then
         clear()
+    elseif command:match("start") then
+        start(command)
+    elseif command:match("stop") then
+        stop()
     else
         write("zsh: command not found: " .. command .. "\n")
     end
+end
+
+function start(arg)
+    if arg:match("start panel") then
+            rs.setBundledOutput("left", colors.red)
+        elseif arg:match("start array") then
+            rs.setBundledOutput("left", colors.green)
+        elseif arg:match("start all") then
+            rs.setBundledOutput("left", colors.red + colors.green)
+        else
+            write("Usage: start [panel|array|all]\n")
+    end
+end
+
+function stop(arg)
+    rs.setBundledOutput("left", 0)
 end
 
 function loop()
