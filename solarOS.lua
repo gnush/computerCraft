@@ -83,18 +83,18 @@ end
 
 function start(arg)
     if arg:match("start panel") then
-            rs.setBundledOutput("left", colors.red)
+            rs.setBundledOutput("top", colors.green)
         elseif arg:match("start array") then
-            rs.setBundledOutput("left", colors.green)
+            rs.setBundledOutput("top", colors.blue)
         elseif arg:match("start all") then
-            rs.setBundledOutput("left", colors.red + colors.green)
+            rs.setBundledOutput("top", colors.blue + colors.green)
         else
             write("Usage: start [panel|array|all]\n")
     end
 end
 
 function stop(arg)
-    rs.setBundledOutput("left", 0)
+    rs.setBundledOutput("top", 0)
 end
 
 function loop()
