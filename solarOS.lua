@@ -1,6 +1,6 @@
 --[[
     Author: gnush
-    This program will set a 2 bit redpower output.
+    This program will set a output signal up to 8 bit using the start/stop command.
 ]]--
 -- disable terminating via Ctrl + t
 os.pullEvent = os.pullEventRaw
@@ -14,10 +14,6 @@ user = ""
 -- define users and their respective passwords
 users = {"root", "herp", "narwhal"}
 pass = {"toor" ,"derp", "bacon"}
-
--- variables for the redpower signals
-signalTime = 2
-
 
 function clear()
     term.clear()
