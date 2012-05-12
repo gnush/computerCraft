@@ -1,14 +1,19 @@
+--[[
+    Author: gnush
+    This program will set a 2 bit redpower output.
+]]--
 -- disable terminating via Ctrl + t
 os.pullEvent = os.pullEventRaw
 
 -- variables for the prompt
-user = ""
-host = "derp"
+program = "solarOS"
 version = "0.1"
+host = "derp"
+user = ""
 
 -- define users and their respective passwords
 users = {"root", "herp", "narwhal"}
-pass = {"" ,"derp", "bacon"}
+pass = {"toor" ,"derp", "bacon"}
 
 -- variables for the redpower signals
 signalTime = 2
@@ -20,7 +25,15 @@ function clear()
 end
 
 function prompt()
-    write(user .. " at " .. host .. " in " .. shell.dir() .. " ")
+    local suffix = "%"
+
+    if user:match("root") then
+        suffix = "#"
+    else
+        suffix = "%"
+    end
+    
+    write(user .. " at " .. host .. " in ~ " .. suffix .. " ")
 end
 
 function login()
@@ -43,18 +56,38 @@ function login()
     if pos ~= -1 then
         if pass[pos]:match(p) then
             user = u
+            write("Linux " .. host .. " 3.3.5 x86_64\ " .. program .. " " .. version .. "\n\n")
         end
     else
         write("Login incorrect\n\n")
         os.sleep(1)
         login()
     end
+end
 
-    clear()
-    write("Linux " .. host .. " 3.3.5 x86_64\nsolarOS " .. version .. "\n")
+function logout()
+    login()
+end
+
+function exec()
+    local command = read()
+    
+    if command:match("logout") then
+        logout()
+    elseif command:match("clear") then
+        clear()
+    else
+        write("zsh: command not found: " .. command .. "\n")
+    end
+end
+
+function loop()
     prompt()
+    exec()
+    loop()
 end
 
 clear()
-write("solarOS " .. version .. " herp tty1\n\n")
+write(program .. " " .. version .. " " .. host .. " tty1\n\n")
 login()
+loop()
