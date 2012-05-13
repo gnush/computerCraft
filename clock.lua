@@ -5,6 +5,7 @@
     Night: 1
 ]]--
 
+-- possible values are: top, back, left, right, bottom
 outSide = "bottom"
 
 function time()
