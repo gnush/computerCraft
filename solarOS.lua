@@ -7,13 +7,16 @@ os.pullEvent = os.pullEventRaw
 
 -- variables for the prompt
 program = "solarOS"
-version = "0.3"
+version = "0.3.1"
 host = "derp"
 user = ""
 
 -- define users and their respective passwords
 users = {"root", "herp", "narwhal"}
 pass = {"toor" ,"derp", "bacon"}
+
+-- variables for controlling the output
+outSide = "top"             -- possible values are: top, back, left, right, bottom
 
 function clear()
     term.clear()
@@ -74,18 +77,18 @@ end
 
 function start(arg)
     if arg:match("start panel") then
-            rs.setBundledOutput("top", colors.green)
+            rs.setBundledOutput(outSide, colors.green)
         elseif arg:match("start array") then
-            rs.setBundledOutput("top", colors.blue)
+            rs.setBundledOutput(outSide, colors.blue)
         elseif arg:match("start all") then
-            rs.setBundledOutput("top", colors.blue + colors.green)
+            rs.setBundledOutput(outSide, colors.blue + colors.green)
         else
             write("Usage: start [panel|array|all]\n")
     end
 end
 
 function stop(arg)
-    rs.setBundledOutput("top", 0)
+    rs.setBundledOutput(outSide, 0)
 end
 
 function exec()
