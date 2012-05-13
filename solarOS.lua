@@ -1,13 +1,13 @@
 --[[
     Author: gnush
-    This program will set a output signal up to 8 bit using the start/stop command.
+    This program will set a output signal up to 6 bit using the start/stop command.
 ]]--
 -- disable terminating via Ctrl + t
 os.pullEvent = os.pullEventRaw
 
 -- variables for the prompt
 program = "solarOS"
-version = "0.2"
+version = "0.3"
 host = "derp"
 user = ""
 
@@ -62,23 +62,14 @@ function login()
 end
 
 function logout()
+    clear()
     login()
 end
 
-function exec()
-    local command = read()
+function edit(arg)
+    local path = string.sub(arg, 6)
     
-    if command:match("logout") then
-        logout()
-    elseif command:match("clear") then
-        clear()
-    elseif command:match("start") then
-        start(command)
-    elseif command:match("stop") then
-        stop()
-    else
-        write("zsh: command not found: " .. command .. "\n")
-    end
+    shell.run("edit", path)
 end
 
 function start(arg)
@@ -95,6 +86,24 @@ end
 
 function stop(arg)
     rs.setBundledOutput("top", 0)
+end
+
+function exec()
+    local command = read()
+    
+    if command:match("logout") then
+        logout()
+    elseif command:match("clear") then
+        clear()
+    elseif command:match("start") then
+        start(command)
+    elseif command:match("stop") then
+        stop()
+    elseif command:match("edit") then
+        edit(command)
+    else
+        write("zsh: command not found: " .. command .. "\n")
+    end
 end
 
 function loop()
