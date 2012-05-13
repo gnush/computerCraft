@@ -11,7 +11,7 @@ outSide = "bottom"
 function time()
     local t = os.time()
     
-    if ( t > 22.0 && t < 7.0) then
+    if t < 7.5 or t > 22.0 then
         rs.setOutput(outSide, true)
     else
         rs.setOutput(outSide, false)
@@ -20,7 +20,7 @@ end
 
 function loop()
     time()
-    os.sleep(10)
+    os.sleep(15)
     loop()
 end
 
