@@ -18,10 +18,7 @@ function time()
     end
 end
 
-function loop()
+while true do
     time()
-    os.sleep(15)
-    loop()
+    os.sleep(30)
 end
-
-loop()
