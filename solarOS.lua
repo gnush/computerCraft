@@ -9,18 +9,37 @@ os.pullEvent = os.pullEventRaw
 
 -- variables for the prompt
 program = "solarOS"
-version = "0.4.3"
+version = "0.4.6"
 host = "derp"
 user = ""
+k = 65432895
 
 -- define users and their respective passwords
-users = {"root", "herp", "narwhal"}
-pass = {"toor" ,"derp", "bacon"}
+users = {"root", "narwhal"}
+pass = {"vzMfrxL6+Ujty|N7[>^?_@0($" , "%#\"P8,U;.Vjty|N7[>^?_@0($"}
 
 -- variables for controlling the output
 outSide = "left"                       -- possible values are: top, back, left, right, bottom
 signal = {colors.green, colors.blue}   -- the wires to be set
 signalMatcher = {"solar", "light"}     -- and their respective arguments
+
+function hash(str)
+    local s = 0
+    local p = ""
+    
+    for c in str:gmatch(".") do
+        s = s + string.byte(c)
+    end
+
+    s = bit.bxor(k, s)
+
+    while s > 0 do
+        p = p .. string.char(s % 94 + 33)
+        s = bit.brshift(s, 1)
+    end
+    
+    return string.sub(p, 1, p:len() - 1)
+end
 
 function clear()
     term.clear()
@@ -55,13 +74,17 @@ function login()
     end
     
     if pos ~= -1 then
-        if pass[pos]:match(p) then
+        if pass[pos] == hash(p) then
             user = u
             write("Linux " .. host .. " 3.3.5 x86_64 " .. program .. " " .. version .. "\n\n")
+        else
+            write("Login incorrect\n\n")
+            os.sleep(2)
+            login()
         end
     else
         write("Login incorrect\n\n")
-        os.sleep(1)
+        os.sleep(2)
         login()
     end
 end
