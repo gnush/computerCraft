@@ -7,7 +7,7 @@ os.pullEvent = os.pullEventRaw
 
 -- variables for the prompt
 program = "solarOS"
-version = "0.3.1"
+version = "0.4.3"
 host = "derp"
 user = ""
 
@@ -16,7 +16,9 @@ users = {"root", "herp", "narwhal"}
 pass = {"toor" ,"derp", "bacon"}
 
 -- variables for controlling the output
-outSide = "top"             -- possible values are: top, back, left, right, bottom
+outSide = "left"                       -- possible values are: top, back, left, right, bottom
+signal = {colors.green, colors.blue}   -- the wires to be set
+signalMatcher = {"solar", "light"}     -- and their respective arguments
 
 function clear()
     term.clear()
@@ -28,11 +30,9 @@ function prompt()
 
     if user:match("root") then
         suffix = "#"
-    else
-        suffix = "%"
     end
     
-    write(user .. " at " .. host .. " in ~ " .. suffix .. " ")
+    write(user .. " at " .. host .. " in /" .. shell.dir() .. " " .. suffix .. " ")
 end
 
 function login()
@@ -55,7 +55,7 @@ function login()
     if pos ~= -1 then
         if pass[pos]:match(p) then
             user = u
-            write("Linux " .. host .. " 3.3.5 x86_64\ " .. program .. " " .. version .. "\n\n")
+            write("Linux " .. host .. " 3.3.5 x86_64 " .. program .. " " .. version .. "\n\n")
         end
     else
         write("Login incorrect\n\n")
@@ -69,41 +69,67 @@ function logout()
     login()
 end
 
-function edit(arg)
-    local path = string.sub(arg, 6)
-    
+function edit(path)
     shell.run("edit", path)
 end
 
+function ls()
+    shell.run("ls")
+end
+
+function cd(path)
+    shell.run("cd", path)
+end
+
 function start(arg)
-    if arg:match("start panel") then
-            rs.setBundledOutput(outSide, colors.green)
-        elseif arg:match("start array") then
-            rs.setBundledOutput(outSide, colors.blue)
-        elseif arg:match("start all") then
-            rs.setBundledOutput(outSide, colors.blue + colors.green)
-        else
-            write("Usage: start [panel|array|all]\n")
+    for i = 1,table.getn(signalMatcher) do
+        if arg:match(signalMatcher[i]) then
+            rs.setBundledOutput(outSide, rs.getBundledOutput(outSide) + signal[i])
+            return
+        end
     end
+    
+    if arg:match("all") then
+        rs.setBundledOutput(outSide, signal[1] + signal[2])
+        return
+    end
+    
+    write("Usage: start [solar|light|all]\n")
 end
 
 function stop(arg)
-    rs.setBundledOutput(outSide, 0)
+    for i = 1,table.getn(signalMatcher) do
+        if arg:match(signalMatcher[i]) then
+             rs.setBundledOutput(outSide, rs.getBundledOutput(outSide) - signal[i] % 65535)
+            return
+        end
+    end
+        
+    if arg:match("all") then
+        rs.setBundledOutput(outSide, 0)
+        return
+    end
+    
+    write("Usage: stop [solar|light|all]\n")
 end
 
 function exec()
     local command = read()
-    
+
     if command:match("logout") then
         logout()
     elseif command:match("clear") then
         clear()
     elseif command:match("start") then
-        start(command)
+        start(string.sub(command, 6))
     elseif command:match("stop") then
-        stop()
+        stop(string.sub(command, 5))
     elseif command:match("edit") then
-        edit(command)
+        edit(string.sub(command, 6))
+    elseif command:match("ls") then
+        ls()
+    elseif command:match("cd") then
+        cd(string.sub(command, 4))
     else
         write("zsh: command not found: " .. command .. "\n")
     end
