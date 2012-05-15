@@ -1,6 +1,8 @@
 --[[
     Author: gnush
-    This program will set a output signal up to 6 bit using the start/stop command.
+    This program can be used as a basic operating system for whatever you want to implement.
+    It features a login and some basic filesystem stuff.
+    Tested with CraftOS 1.3
 ]]--
 -- disable terminating via Ctrl + t
 os.pullEvent = os.pullEventRaw
