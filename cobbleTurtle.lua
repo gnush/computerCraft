@@ -7,6 +7,7 @@
 while true do
     if turtle.detect() and turtle.getItemCount(1) <= 16 then
         turtle.dig()
+        sleep(0.5)
     else
         turtle.back()
         turtle.turnLeft()
