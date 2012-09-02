@@ -56,7 +56,7 @@ src = Point:new{x=x0, y=y0, z=z0}
 turtle.select(8)
 i=0
 while i < 4 do
-    dig=turtle.dig
+    dig=turtle.dig()
     turtle.forward()
     tmp = gps.locate(2, false)
     turtle.back()
