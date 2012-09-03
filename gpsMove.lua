@@ -83,7 +83,7 @@ while not dst:compare(src) do
 
     i = 1
     while i < 5 do
-        if(not turtle.detect() and not i == oldDirection) then
+        if(not turtle.detect() and i ~= oldDirection) then
             neighbors[i] = Point:new{x=src.x+posX[i], y=src.y+posY[i],z=src.z}
         else
             neighbors[i] = max
@@ -93,13 +93,13 @@ while not dst:compare(src) do
         i = i + 1
     end
 
-    if(not turtle.detectUp()) then
+    if(not turtle.detectUp() and 5 ~= oldDirection) then
         neighbors[5] = Point:new{x=src.x,y=src.y,z=src.z+1}
     else
         neighbors[5] = max
     end
 
-    if(not turtle.detectDown()) then
+    if(not turtle.detectDown() and 6 ~= oldDirection) then
         neighbors[6]      = Point:new{x=src.x,y=src.y,z=src.z-1}
     else
         neighbors[6] = max
