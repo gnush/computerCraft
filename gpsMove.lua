@@ -5,7 +5,7 @@
     
     Usage: gpsMove <x> <y> <z>
     
-    returns nil if either x,y or z is not a number
+    returns nil if either x, y or z is not a number
 ]]--
 Point = { x = 0,
           y = 0,
@@ -83,7 +83,7 @@ while not dst:compare(src) do
 
     i = 1
     while i < 5 do
-        if(not turtle.detect()) then
+        if(not turtle.detect() and not i == oldDirection) then
             neighbors[i] = Point:new{x=src.x+posX[i], y=src.y+posY[i],z=src.z}
         else
             neighbors[i] = max
@@ -119,21 +119,28 @@ while not dst:compare(src) do
     end
 
     -- goto next point
+    oldDirection = 0
     if(direction == 1) then
+        oldDirection = 3
         turtle.forward()
     elseif (direction == 2) then
+        oldDirection = 4
         turtle.turnLeft()
         turtle.forward()
         turtle.turnRight()
     elseif (direction == 3) then
+        oldDirection = 1
         turtle.back()
     elseif (direction == 4) then
+        oldDirection = 2
         turtle.turnRight()
         turtle.forward()
         turtle.turnLeft()
     elseif (direction == 5) then
+        oldDirection = 6
         turtle.up()
     elseif (direction == 6) then
+        oldDirection = 5
         turtle.down()
     end
 
