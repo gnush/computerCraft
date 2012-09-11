@@ -6,15 +6,29 @@
 ]]--
 
 -- possible values are: top, back, left, right, bottom
-outSide = "bottom"
+outSides = {"back", "left", "right"}
+
+ 
+function list_iter(t)
+  local i = 0
+  local n = table.getn(t)
+  return function ()
+           i = i + 1
+           if i <= n then return t[i] end
+         end
+end
 
 function time()
     local t = os.time()
     
-    if t < 7.5 or t > 22.0 then
-        rs.setOutput(outSide, true)
+    if t < 7.5 or t > 21.5 then
+        for s in list_iter(outSides) do
+            rs.setOutput(s, true)
+        end
     else
-        rs.setOutput(outSide, false)
+        for s in list_iter(outSides) do
+            rs.setOutput(s, false)
+        end
     end
 end
 
