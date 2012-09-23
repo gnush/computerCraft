@@ -4,15 +4,6 @@
     Need an active gps to work.
     Uses gpsMove.lua for positioning.
 ]]--
-home      = Point:new{x=197, y=-33, z=68}   -- Point of the disk drive
-start     = Point:new{x=200, y=-34, z=69}   -- Where to start harvesting?
-dropzone  = Point:new{x=200, y=-34, z=69}   -- Point to drop the harvested stuff
-rows      = 4                               -- number of rows to harvest
-length    = 15                              -- length of each row
-direction = 0                               -- Directions are {0: x+, 1: y+, 2: x-, 3: y-}
-
--- TODO add direction for the rows
-
 Point = { x = 0,
           y = 0,
           z = 0,
@@ -35,12 +26,21 @@ Point = { x = 0,
           end
 }
 
+home      = Point:new{x=197, y=-33, z=68}   -- Point of the disk drive
+start     = Point:new{x=200, y=-34, z=69}   -- Where to start harvesting?
+dropzone  = Point:new{x=198, y=-32, z=69}   -- Point to drop the harvested stuff
+numRows   = 4                               -- number of rows to harvest
+length    = 15                              -- length of each row
+pos       = 0                               -- Directions are {0: x+, 1: y+, 2: x-, 3: y-}
+
+-- TODO add direction for the rows
+
 function position()
-    local i=0
     local x0,y0,z0=gps.locate(2,false)
     local src = Point:new{x=x0, y=y0, z=z0}
     
     turtle.select(8)
+    local i=0
     while i < 4 do
         dig=turtle.dig()
         turtle.forward()
@@ -58,10 +58,11 @@ function position()
         turtle.turnLeft()
     end
     turtle.select(1)
-    
+        
     i=0
-    while i < direction do
+    while i < pos do
         turtle.turnRight()
+        i = i+1
     end
 end
 
@@ -70,8 +71,8 @@ function harvest_lane()
 
     local slot=1
     local i=0
-    while i<length do
-        if turtle.getItemSpace(1) > 2 then
+    while i < length+1 do
+        if turtle.getItemSpace(slot) > 2 then
             turtle.dig()
             turtle.digDown()
             turtle.forward()
@@ -84,8 +85,9 @@ function harvest_lane()
     end
     
     i=0
-    while i < length do
+    while i < length+1 do
         turtle.back()
+        i = i+1
     end
 end
 
@@ -93,10 +95,11 @@ function harvest()
     local p = Point:new{x=start.x, y=start.y, z=start.z}
     
     local i = 0
-    while i < rows do
+    while i < numRows do
         shell.run("gpsMove", p.x, p.y, p.z)
         harvest_lane()
         p = Point:new{x=p.x, y=p.y-2, z=p.z}
+        i = i+1
     end
 end
 
@@ -106,7 +109,7 @@ function drop()
     local i=1
     while i < 10 do
         turtle.select(i)
-        turtle.dropDown()
+        turtle.drop()   -- FIXME change to dropDown() if computercraft version >= 1.4
         i = i+1
     end
 end
@@ -115,5 +118,6 @@ while true do
     shell.run("gpsMove", home.x, home.y, home.z)
     harvest()
     drop()
-    os.sleep(5)
+    shell.run("gpsMove", home.x, home.y, home.z)
+    os.sleep(60)
 end
